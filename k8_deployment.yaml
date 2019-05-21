@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8-sigterm-deployment
+  labels:
+    app: k8-sigterm
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: k8-sigterm
+  template:
+    metadata:
+      labels:
+        app: k8-sigterm
+    spec:
+      containers:
+      - name: k8-sigterm-handler
+        image: srini92/k8_sigterm_handler:latest
+
