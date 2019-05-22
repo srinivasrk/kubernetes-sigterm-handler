@@ -6,3 +6,4 @@ If your containers are running important applications and have connections to da
 
 This simple example shows how to handle SIGTERM using python & can be demoed on Kubernetes.
 
+![example](https://github.com/srinivasrk/kubernetes-sigterm-handler/blob/master/k8-sigterm-handler.PNG)
