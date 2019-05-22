@@ -1,4 +1,5 @@
 FROM python:3.6
 WORKDIR /app
-COPY test.py /app/
-CMD ["python", "test.py"]
+COPY consumer.py /app/
+RUN pip install pika
+CMD ["python", "consumer.py"]
