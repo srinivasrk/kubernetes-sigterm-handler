@@ -6,4 +6,9 @@ If your containers are running important applications and have connections to da
 
 This simple example shows how to handle SIGTERM using python & can be demoed on Kubernetes.
 
+## Example
+
+Run the deployment to create 2 pods. When you scale down replicas from 2 to 1. We can see the pod which received SIGTERM first handles it before exiting the container
+
+
 ![example](https://github.com/srinivasrk/kubernetes-sigterm-handler/blob/master/k8-sigterm-handler.PNG)
