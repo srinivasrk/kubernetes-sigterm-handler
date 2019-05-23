@@ -24,11 +24,12 @@ processing_callback = False
 def signal_handler(signal, frame):
     global received_signal
     global channel
-    global connection
+    global consumer_tag
+
     logger.info("signal received")
     received_signal = True
     if not processing_callback and channel is not None and connection is not None:
-         channel.cancel()
+         channel.basic_cancel(consumer_tag)
 
 
 signal.signal(signal.SIGINT, signal_handler)
@@ -39,7 +40,7 @@ def callback(ch, method, properties, body):
     logger.info(body)
     global processing_callback
     global channel
-    global connection
+    global consumer_tag
 
     processing_callback = True
     try:
@@ -51,18 +52,20 @@ def callback(ch, method, properties, body):
     finally:
         processing_callback = False
         if received_signal:
-            channel.cancel()
+            channel.basic_cancel(consumer_tag)
 
 
 def closeConnection(method_frame):
     global connection
     global channel
+    logger.info("Closing connection")
     channel.close()
     connection.close()
 
 if __name__ == "__main__":
     global channel
     global connection
+    global consumer_tag
 
     try:
         _credentials = pika.PlainCredentials('guest',
@@ -78,8 +81,8 @@ if __name__ == "__main__":
         channel.add_on_cancel_callback(closeConnection)
         logger.info(' [*] Waiting for messages. To exit press CTRL+C')
         channel.queue_declare(queue='test', durable=True)
-        channel.basic_consume(queue='test', on_message_callback=callback)
+        consumer_tag = channel.basic_consume(queue='test', on_message_callback=callback)
         channel.start_consuming()
     except Exception as e:
         logger.info(e)
-        channel.cancel()
+        channel.basic_cancel(consumer_tag)
